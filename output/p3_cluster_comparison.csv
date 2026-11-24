@@ -1,0 +1,29 @@
+k,algorithm,silhouette
+2,K-means (Spark),0.4707985670435853
+2,Gaussian mixture (Spark),0.4435998703623189
+3,K-means (Spark),0.5547850462085268
+3,Gaussian mixture (Spark),0.4936245253578691
+4,K-means (Spark),0.4963534612111444
+4,Gaussian mixture (Spark),0.2138434637196724
+5,K-means (Spark),0.47620631590814255
+5,Gaussian mixture (Spark),0.273624737342009
+6,K-means (Spark),0.5002864546048656
+6,Gaussian mixture (Spark),0.01874902092773601
+7,K-means (Spark),0.48459938057356616
+7,Gaussian mixture (Spark),-0.00546926629867077
+8,K-means (Spark),0.4534403768037485
+8,Gaussian mixture (Spark),-0.2992156618279674
+2,K-means (R),0.4707985670435853
+2,Hierarchical Ward (R),0.3554749630623866
+3,K-means (R),0.5278922936115924
+3,Hierarchical Ward (R),0.4028484064495321
+4,K-means (R),0.4962322123677037
+4,Hierarchical Ward (R),0.4048528030608772
+5,K-means (R),0.4781247120014833
+5,Hierarchical Ward (R),0.3893714606612524
+6,K-means (R),0.4610062626671993
+6,Hierarchical Ward (R),0.33113551205441377
+7,K-means (R),0.4770309326870257
+7,Hierarchical Ward (R),0.39003998896037934
+8,K-means (R),0.4903034608227113
+8,Hierarchical Ward (R),0.4160951785175857

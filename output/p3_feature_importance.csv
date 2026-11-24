@@ -1,0 +1,17 @@
+model,feature,importance
+Random forest (Spark MLlib),hour,0.08717811781794435
+Random forest (Spark MLlib),is_peak,0.0
+Random forest (Spark MLlib),is_weekend,0.0
+Random forest (Spark MLlib),direction_id,0.032470113004738135
+Random forest (Spark MLlib),trip_progress,0.06214192448731671
+Random forest (Spark MLlib),elapsed_sched_min,0.33987453064876083
+Random forest (Spark MLlib),stop_sequence,0.14289061707455283
+Random forest (Spark MLlib),route,0.33544469696668705
+Gradient-boosted trees (Spark MLlib),hour,0.06071712939647503
+Gradient-boosted trees (Spark MLlib),is_peak,0.0
+Gradient-boosted trees (Spark MLlib),is_weekend,0.0
+Gradient-boosted trees (Spark MLlib),direction_id,0.057988636913608387
+Gradient-boosted trees (Spark MLlib),trip_progress,0.08525579664969761
+Gradient-boosted trees (Spark MLlib),elapsed_sched_min,0.4261589470784133
+Gradient-boosted trees (Spark MLlib),stop_sequence,0.06254668757505086
+Gradient-boosted trees (Spark MLlib),route,0.30733280238675487

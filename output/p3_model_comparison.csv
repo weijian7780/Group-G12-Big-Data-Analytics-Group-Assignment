@@ -1,0 +1,7 @@
+model,engine,rmse,mae,r2,train_s
+Random forest (Spark MLlib),Spark,4.601,3.668,0.939,8.66
+Gradient-boosted trees (Spark MLlib),Spark,4.985,3.927,0.928,43.45
+Random forest (R ranger),R,5.277,4.179,0.92,0.46
+Linear regression (Spark MLlib),Spark,6.212,4.685,0.889,2.87
+Linear regression (R lm),R,6.253,4.705,0.887,0.02
+Baseline: training mean,Spark,19.609,13.205,-0.107,0

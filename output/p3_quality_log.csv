@@ -1,0 +1,11 @@
+step,n
+snapshots (feed versions),103
+vehicle records (raw),8572
+records with no trip_id,0
+records with trip_id not in GTFS,0
+records outside Johor bbox,0
+"duplicate (vehicle, timestamp)",0
+clean vehicle records,8572
+distinct vehicles,130
+distinct trips observed,155
+distinct routes observed,19

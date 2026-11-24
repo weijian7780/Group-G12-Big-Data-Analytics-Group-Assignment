@@ -1,0 +1,145 @@
+---
+title: "BAS.MY Johor Bahru: observed vs scheduled bus service"
+subtitle: "KD44103 Big Data Analytics · Group G12 · Phase 3 results dashboard"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    code_folding: hide
+    self_contained: true
+---
+
+<!-- AI-assisted (Claude Code), 2026-11-24. Every number below is computed from phase3/output, so re-knitting after more data updates the page. -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center", out.width = "100%")
+source("00_config.R")
+fmt  <- function(x, d = 0) format(round(x, d), big.mark = ",", nsmall = d)
+pct  <- function(x, d = 0) paste0(fmt(100 * x, d), "%")
+fig  <- function(n) knitr::include_graphics(list.files(FIG_DIR, paste0("^", n, "_"), full.names = TRUE)[1])
+q    <- rd("p3_quality_log.csv")
+arr  <- rd("p3_arrivals.csv", col_types = cols(start_date = "c", stop_id = "c", .default = col_guess())) |> filter(stop_sequence > 1)
+score <- rd("sql_route_scorecard.csv")
+mc   <- rd("p3_model_comparison.csv")
+cc   <- rd("p3_cluster_comparison.csv")
+hwr  <- rd("p3_headway_route.csv")
+cov  <- rd("p3_trip_coverage.csv", col_types = cols(route = "c", day_type = "c", .default = "d"))
+prof <- rd("p3_cluster_profile.csv")
+st   <- if (file.exists(file.path(OUT_DIR, "p3_stat_tests.csv"))) rd("p3_stat_tests.csv") else NULL
+otp  <- mean(between(arr$delay_min, -1, 5)); early <- mean(arr$delay_min < -1); late <- mean(arr$delay_min > 5)
+best <- mc |> filter(!grepl("Baseline", model)) |> slice_min(rmse, n = 1)
+base <- mc |> filter(grepl("Baseline", model))
+seen <- if (sum(cov$trips_expected) > 0) sum(cov$trips_seen) / sum(cov$trips_expected) else NA_real_
+```
+
+<style>.kpi{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 18px}.kpi div{flex:1 1 150px;border:1px solid #dde;border-radius:8px;padding:10px 12px}
+.kpi b{display:block;font-size:1.6em;color:#0072B2}.kpi span{font-size:.85em;color:#555}</style>
+
+<div class="kpi">
+<div><b>`r fmt(vol$records)`</b><span>GPS records from `r fmt(vol$snapshots)` realtime snapshots</span></div>
+<div><b>`r fmt(nrow(arr))`</b><span>stop arrivals inferred by Spark</span></div>
+<div><b>`r pct(otp)`</b><span>arrivals on time (−1 to +5 min)</span></div>
+<div><b>`r pct(early)`</b><span>arrivals more than 1 min early</span></div>
+<div><b>`r if (is.na(seen)) "n/a" else pct(seen)`</b><span>scheduled trips seen in the feed</span></div>
+</div>
+
+**Research question.** How do the buses we can actually see moving (GPS, GTFS-Realtime) compare with the published BAS.MY timetable (static GTFS)? Data window: `r vol$first_snapshot` to `r vol$last_snapshot` (`r vol$days` day(s), `r fmt(vol$raw_json_mb, 1)` MB raw JSON).
+
+# Pipeline
+
+| Stage | Tool | What happens |
+|---|---|---|
+| Ingest | Python collector | polls the GTFS-Realtime API every 30 s, decodes protobuf → JSON Lines, partitions by date |
+| Store | SQLite (SQL) + Parquet | keyed relational schema for the timetable + Spark outputs; views and report queries in `sql/` |
+| Process | **Apache Spark** (PySpark, Spark SQL) | flatten nested JSON, clean, GPS pairs → speeds, stop-arrival inference, headways, 250 m grid |
+| Model | Spark MLlib + **R** | delay regression (5 algorithms), grid clustering (4 algorithms), Wilcoxon tests |
+| Present | **R** ggplot2 / R Markdown | this dashboard and the report figures |
+
+```{r}
+knitr::kable(q, col.names = c("Data-quality step", "Count"), format.args = list(big.mark = ","))
+```
+
+# Objective 1 · Speed by route and hour
+
+```{r}
+fig("fig01")
+```
+
+```{r}
+fig("fig02")
+```
+
+```{r}
+fig("fig03")
+```
+
+```{r}
+s1 <- score |> filter(!is.na(speed_obs_kmh)) |> mutate(gap = speed_obs_kmh - speed_sched_kmh)
+```
+
+Measured over all observed routes, buses move at `r fmt(weighted.mean(s1$speed_obs_kmh, s1$arrivals_observed, na.rm = TRUE), 1)` km/h against `r fmt(weighted.mean(s1$speed_sched_kmh, s1$arrivals_observed, na.rm = TRUE), 1)` km/h implied by the timetable. `r sum(s1$gap > 0)` of `r nrow(s1)` routes run faster than scheduled, and `r sum(s1$gap < 0)` run slower. `r if (!is.null(st) && nrow(st)) paste0("Statistical test: ", st$test[1], ", median ", fmt(st$median_offpeak[1], 1), " vs ", fmt(st$median_peak[1], 1), " km/h, p = ", signif(st$p_value[1], 2), ".") else ""`
+
+# Objective 2 · Punctuality and service gaps
+
+```{r}
+fig("fig04")
+```
+
+```{r}
+fig("fig05")
+```
+
+```{r}
+fig("fig06")
+```
+
+```{r}
+knitr::kable(score |> filter(!is.na(trips_observed)) |>
+               transmute(Route = route, `Trips/day (sched.)` = trips_per_day, `Trips seen` = trips_observed,
+                         `Mean delay (min)` = mean_delay_min, `On time` = pct(on_time_share), Early = pct(early_share),
+                         Late = pct(late_share), `Bunched` = pct(bunching_share), `EWT (min)` = ewt_min),
+             caption = "Route scorecard (output of sql/03_queries.sql: route_scorecard)")
+```
+
+# Objective 3 · Congestion hotspots
+
+```{r}
+fig("fig07")
+```
+
+```{r}
+knitr::kable(prof |> transmute(Cluster = label, Cells = cells, `Median speed` = round(p50_speed, 1),
+                               `Stopped away from stop` = pct(share_stopped_offstop), `Dwell at stop` = pct(share_dwell_at_stop)),
+             caption = "Median profile of each K-means cluster")
+if (file.exists(file.path(OUT_DIR, "sql_hotspots_named.csv")))
+  knitr::kable(head(rd("sql_hotspots_named.csv"), 10), caption = "Top congested cells, named by nearest stop (SQL)")
+```
+
+# Objective 4 · Coverage
+
+```{r}
+fig("fig08")
+```
+
+# Algorithm comparison
+
+```{r}
+fig("fig09")
+knitr::kable(mc, caption = "Delay regression, held-out trips")
+```
+
+The best model is **`r best$model`** (RMSE `r fmt(best$rmse, 2)` min, R² `r fmt(best$r2, 2)`), against `r fmt(base$rmse, 2)` min for the training-mean baseline.
+
+```{r}
+fig("fig10")
+fig("fig12")
+fig("fig11")
+```
+
+# Limitations
+
+* Arrivals are **inferred** from 30-second GPS fixes (interpolated where the track passes within 60 m of a stop), not recorded.
+* Routes or buses missing from the feed cannot be assessed; a missing trip may be a tracking gap rather than a cancellation.
+* The timetable has a 1-minute resolution, and every trip uses the `ALLDAY` service, so it does not change for peak hours or weekends.

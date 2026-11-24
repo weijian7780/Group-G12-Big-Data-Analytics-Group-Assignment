@@ -1,0 +1,16 @@
+# Final report & presentation slides (excluded from GitHub repo per request)
+07_make_slides.py
+Group_G12_FinalReport.Rmd
+Group_G12_FinalReport.docx
+Group_G12_FinalReport.pdf
+Group_G12_Phase3_Presentation.pptx
+
+# Runtime / temp / OS files
+.spark_tmp/
+__pycache__/
+*.pyc
+.Rhistory
+.RData
+.Rproj.user/
+.DS_Store
+Thumbs.db

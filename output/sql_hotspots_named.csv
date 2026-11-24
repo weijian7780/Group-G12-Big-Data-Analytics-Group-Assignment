@@ -1,0 +1,21 @@
+label,lat,lon,n_pairs,p50_speed,share_stopped_offstop,nearest_stop,nearest_stop_m
+Congested (stopped away from stops),1.5363014814,103.746422,102,0,1,Simpang Jalan Firma 3/1,400
+Congested (stopped away from stops),1.527257764,103.582424,38,0,1,Taman Pulai Mutiara 6,29
+Congested (stopped away from stops),1.4978656827,103.658807,35,0.2,1,HAB TAMAN TAN SRI YAACOB,132
+Congested (stopped away from stops),1.4956047534,103.744175,110,0.2,0.927,Larkin Sentral,190
+Congested (stopped away from stops),1.561171704,103.618369,9,0.3,0.778,Taman Sri Pulai (Lebuhraya Skudai - Pont,178
+Congested (stopped away from stops),1.5996075027,103.820558,39,0.2,0.769,Perhentian Bas dan Kereta Sewa Ulu Tiram,270
+Congested (stopped away from stops),1.493343824,103.739682,12,0.5,0.75,OPP DEWAN JKR JOHOR BAHRU,218
+Congested (stopped away from stops),1.4729954601,103.901433,11,0.2,0.727,Opp SMK Pasir Gudang,542
+Congested (stopped away from stops),1.4594298841,103.584671,7,0.2,0.714,Opp Maybank Taman Nusantara,242
+Congested (stopped away from stops),1.5634326333,103.737436,7,1.5,0.714,AEON Dato Onn,383
+Congested (stopped away from stops),1.534040552,103.762148,7,0.4,0.714,Restoran Pokok Ceri,236
+Congested (stopped away from stops),1.4616908134,103.77338,7,1.8,0.714,Opp Menara MSC Cyberport,102
+Congested (stopped away from stops),1.520474976,103.820558,7,0.4,0.714,Taman Bunga Ros,80
+Congested (stopped away from stops),1.4526470961,103.59815,10,0.3,0.7,OPP 68 AVENUE,60
+Congested (stopped away from stops),1.5498670574,103.800339,13,0.1,0.692,IKEA Tebrau Jalan Tebrau,261
+Congested (stopped away from stops),1.5317796227,103.793599,15,2.3,0.667,Taman Molek,115
+Congested (stopped away from stops),1.5656935627,103.59815,12,0.1,0.667,SRI PULAI PERDANA 2,24
+Congested (stopped away from stops),1.4910828947,103.941871,6,0.4,0.667,Jalan Eco Perniagaan 27,168
+Congested (stopped away from stops),1.5521279867,103.798092,53,0.2,0.66,Toppen Tebrau,98
+Congested (stopped away from stops),1.5453451987,103.793599,23,0,0.652,Shell Bakawali,241

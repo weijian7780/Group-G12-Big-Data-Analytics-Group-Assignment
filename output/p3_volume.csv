@@ -1,0 +1,2 @@
+snapshots,records,first_snapshot,last_snapshot,days,raw_json_mb,clean_records,gps_pairs,arrivals,runtime_s
+103,8572,2026-11-24 14:31:55,2026-11-24 15:27:55,1,2.9,8572,8398,2879,48.4
